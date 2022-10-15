@@ -10,4 +10,5 @@ ReactDOM.render(
     </ChakraProvider>
   </React.StrictMode>,
   document.getElementById('root')
+  hi
 )
