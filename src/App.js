@@ -5,24 +5,25 @@ import {
   Flex,
   HStack,
   IconButton,
-  Input,
-  Skeleton,
-  SkeletonText,
-  Text,
+  Input, SkeletonText,
+  Text
 } from '@chakra-ui/react'
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+import { useState } from 'react'
 import { FaLocationArrow, FaTimes } from 'react-icons/fa'
-import { useJsApiLoader, GoogleMap } from '@react-google-maps/api'
 
-const center = { lat: 10.3157, lng: 123.8854} 
+const center = { lat: 10.3157, lng: 123.8854 }
 
 function App() {
 
-  const {isLoaded} = useJsApiLoader({
+  const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
   })
 
-  if(!isLoaded){
-    return <SkeletonText/>
+  const [ map, setmap ] = useState(/** @type google.maps.Map */(null))
+
+  if (!isLoaded) {
+    return <SkeletonText />
   }
 
   return (
@@ -35,8 +36,20 @@ function App() {
     >
       <Box position='absolute' left={0} top={0} h='100%' w='100%'>
         {/*Google map box*/}
-        <GoogleMap center={center} zoom={15} mapContainerStyle={{width: '100%', height: '100%'}}>
+        <GoogleMap
+          center={center}
+          zoom={15}
+          mapContainerStyle={{ width: '100%', height: '100%' }}
+          options={{
+            zoomControl: false,
+            /*streetViewControl: false,*/
+            mapTypeControl: false,
+            fullscreenControl: false,
+          }}
+          onLoad={(map) => setmap(map)}
 
+        >
+          <Marker position={center} />
         </GoogleMap>
       </Box>
 
@@ -70,7 +83,7 @@ function App() {
             aria-label='center back'
             icon={<FaLocationArrow />}
             isRound
-            onClick={() => alert(123)}
+            onClick={() => map.panTo(center)}
           />
         </HStack>
       </Box>
